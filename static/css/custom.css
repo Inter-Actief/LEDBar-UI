@@ -1,0 +1,293 @@
+@font-face {
+    font-family: 'ledbar_default';
+    src: url('../fonts/default.eot');
+    src: url('../fonts/default.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/default.woff2') format('woff2'),
+        url('../fonts/default.woff') format('woff'),
+        url('../fonts/default.ttf') format('truetype'),
+        url('../fonts/default.svg#default') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ledbar_serif';
+    src: url('../fonts/serif.eot');
+    src: url('../fonts/serif.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/serif.woff2') format('woff2'),
+        url('../fonts/serif.woff') format('woff'),
+        url('../fonts/serif.ttf') format('truetype'),
+        url('../fonts/serif.svg#serif') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ledbar_wide';
+    src: url('../fonts/wide.eot');
+    src: url('../fonts/wide.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/wide.woff2') format('woff2'),
+        url('../fonts/wide.woff') format('woff'),
+        url('../fonts/wide.ttf') format('truetype'),
+        url('../fonts/wide.svg#wide') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ledbar_short';
+    src: url('../fonts/short.eot');
+    src: url('../fonts/short.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/short.woff2') format('woff2'),
+        url('../fonts/short.woff') format('woff'),
+        url('../fonts/short.ttf') format('truetype'),
+        url('../fonts/short.svg#short') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ledbar_small';
+    src: url('../fonts/small.eot');
+    src: url('../fonts/small.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/small.woff2') format('woff2'),
+        url('../fonts/small.woff') format('woff'),
+        url('../fonts/small.ttf') format('truetype'),
+        url('../fonts/small.svg#small') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ledbar_shortwide';
+    src: url('../fonts/shortwide.eot');
+    src: url('../fonts/shortwide.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/shortwide.woff2') format('woff2'),
+        url('../fonts/shortwide.woff') format('woff'),
+        url('../fonts/shortwide.ttf') format('truetype'),
+        url('../fonts/shortwide.svg#shortwide') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ledbar_extrawide';
+    src: url('../fonts/extrawide.eot');
+    src: url('../fonts/extrawide.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/extrawide.woff2') format('woff2'),
+        url('../fonts/extrawide.woff') format('woff'),
+        url('../fonts/extrawide.ttf') format('truetype'),
+        url('../fonts/extrawide.svg#shortwide') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+#content {
+    padding: 20px 40px;
+}
+
+.row-padding {
+    height: 1rem;
+}
+
+.row-padding.double {
+    height: 2rem;
+}
+
+.page-padding {
+    height: 2rem;
+}
+
+#json_data, code, pre {
+    font-family: "Bitstream Vera Sans Mono", "Deja Vu Sans Mono", Monaco, "Courier New", Courier, monospace;
+    color: #666;
+    font-size: 12px;
+}
+
+code.json_tag {
+    color: rgb(170, 17, 17);
+}
+
+.CodeMirror {
+    height: calc(100vh - 12rem) !important;
+}
+
+span.color, span.text {
+    background: black;
+    color: red;
+}
+
+span.color {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 4px;
+}
+
+span.color code.red, span.text[data-color='red'] span, span.text span {
+    color: red;
+}
+span.color code.bright_red, span.text[data-color='bright_red'] span {
+    color: red;
+}
+span.color code.orange, span.text[data-color='orange'] span {
+    color: orangered;
+}
+span.color code.bright_orange, span.text[data-color='bright_orange'] span {
+    color: darkorange;
+}
+span.color code.yellow, span.text[data-color='yellow'] span {
+    color: darkorange;
+}
+span.color code.bright_yellow, span.text[data-color='bright_yellow'] span {
+    color: orange;
+}
+span.color code.green, span.text[data-color='green'] span {
+    color: limegreen;
+}
+span.color code.bright_green, span.text[data-color='bright_green'] span {
+    color: lawngreen;
+}
+span.color code.layer_mix_rainbow, span.text[data-color='layer_mix_rainbow'] span {
+    background: linear-gradient(to bottom, orange 14%, lawngreen 14% 28%, red 28% 42%, orange 42% 56%, lawngreen 56% 70%, red 70% 85%, orange 85%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+span.color code.bright_layer_mix_rainbow, span.text[data-color='bright_layer_mix_rainbow'] span {
+    background: linear-gradient(to bottom, red 40%, orange 40% 65%, lawngreen 65%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+span.color code.vertical_mix, span.text[data-color='vertical_mix'] span {
+    background: repeating-linear-gradient(to right, red 10%, orange 20%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+span.color code.sawtooth_mix, span.text[data-color='sawtooth_mix'] span {
+    background: linear-gradient(to bottom, lawngreen 40%, red 40% 65%, lawngreen 65%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+span.color code.green_on_red, span.text[data-color='green_on_red'] span {
+    color: lawngreen;
+    background: red;
+}
+span.color code.red_on_green, span.text[data-color='red_on_green'] span {
+    color: red;
+    background: lawngreen;
+}
+span.color code.orange_on_red, span.text[data-color='orange_on_red'] span {
+    color: orange;
+    background: red;
+}
+span.color code.yellow_on_green, span.text[data-color='yellow_on_green'] span {
+    color: orange;
+    background: lawngreen;
+}
+
+span.text {
+    line-height: 1.5em;
+}
+
+span.text span {
+    font-size: 2em;
+}
+
+span.text[data-font='default'] span, span.text span {
+    font-family: "ledbar_default", monospace;
+}
+
+span.text[data-font='serif'] span {
+    font-family: "ledbar_serif", monospace;
+}
+
+span.text[data-font='wide'] span {
+    font-family: "ledbar_wide", monospace;
+}
+
+span.text[data-font='short'] span {
+    font-family: "ledbar_short", monospace;
+}
+
+span.text[data-font='small'] span {
+    font-family: "ledbar_small", monospace;
+}
+
+span.text[data-font='short_wide'] span {
+    font-family: "ledbar_shortwide", monospace;
+}
+
+span.text[data-font='extra_wide'] span {
+    font-family: "ledbar_extrawide", monospace;
+    letter-spacing: 2px;
+    margin-left: 8px;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: never;
+    font-smooth: never;
+}
+
+img.json_font_picture {
+    height: 1rem;
+    border: 2px solid black;
+    image-rendering: optimizeSpeed;             /*                     */
+    image-rendering: -moz-crisp-edges;          /* Firefox             */
+    image-rendering: -o-crisp-edges;            /* Opera               */
+    image-rendering: -webkit-optimize-contrast; /* Chrome (and Safari) */
+    image-rendering: optimize-contrast;         /* CSS3 Proposed       */
+    -ms-interpolation-mode: nearest-neighbor;   /* IE8+                */
+}
+
+#helpModal .modal-dialog {
+    max-width: 1000px;
+}
+
+.line {
+    border: 1px solid black;
+    border-radius: 4px;
+    align-content: center;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    display: inline-block;
+    width: 100%;
+}
+
+.line .form-group {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+.texts {
+    display: inline-block;
+}
+
+.text {
+    margin: 0 0.1rem;
+    min-height: 2em;
+}
+
+.text-container {
+    margin: 1rem;
+}
+
+.text-container:first-child {
+    margin-top: 0;
+}
+
+.text-container:last-child {
+    margin-bottom: 0;
+}
+
+.text-container .form-group {
+    margin-bottom: 0.5rem;
+}
+
+.dropdown {
+    display: inline-block;
+}
+
+#notification_message {
+    color: red;
+}
+
+#text_block_template, #modal_text_input_template, #line_block_template, #json_form {
+    display: none;
+}

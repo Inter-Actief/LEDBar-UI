@@ -1,0 +1,66 @@
+@font-face {
+    font-family: 'default';
+    src: url('default.eot');
+    src: url('default.eot?#iefix') format('embedded-opentype'),
+        url('default.woff2') format('woff2'),
+        url('default.woff') format('woff'),
+        url('default.svg#default') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'serif';
+    src: url('serif.eot');
+    src: url('serif.eot?#iefix') format('embedded-opentype'),
+        url('serif.woff2') format('woff2'),
+        url('serif.woff') format('woff'),
+        url('serif.svg#serif') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'wide';
+    src: url('wide.eot');
+    src: url('wide.eot?#iefix') format('embedded-opentype'),
+        url('wide.woff2') format('woff2'),
+        url('wide.woff') format('woff'),
+        url('wide.svg#wide') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'short';
+    src: url('short.eot');
+    src: url('short.eot?#iefix') format('embedded-opentype'),
+        url('short.woff2') format('woff2'),
+        url('short.woff') format('woff'),
+        url('short.svg#short') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'small';
+    src: url('small.eot');
+    src: url('small.eot?#iefix') format('embedded-opentype'),
+        url('small.woff2') format('woff2'),
+        url('small.woff') format('woff'),
+        url('small.svg#small') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'shortwide';
+    src: url('shortwide.eot');
+    src: url('shortwide.eot?#iefix') format('embedded-opentype'),
+        url('shortwide.woff2') format('woff2'),
+        url('shortwide.woff') format('woff'),
+        url('shortwide.svg#shortwide') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+

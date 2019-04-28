@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="I.C.T.S.V. Inter-Actief">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <meta name="theme-color" content="#882033"/>
+    <title>LEDBar - {% block page_title %}Page{% endblock %}</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+    {% block css %}
+    {% endblock css %}
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+    {% block js_head %}
+    {% endblock js_head %}
+</head>
+<body>
+<div class="wrapper">
+    <div id="content">
+        {% for categories, message in get_flashed_messages(True) %}
+            <div class="alert alert-dismissible fade show
+                    {% if "error" in categories %}
+                    alert-danger
+                    {% elif "warning" in categories %}
+                    alert-warning
+                    {% elif "success" in categories %}
+                    alert-success
+                    {% elif "info" in categories %}
+                    alert-info
+                    {% elif "debug" in categories %}
+                    alert-secondary
+                    {% else %}
+                    alert-primary
+                    {% endif %}
+                " role="alert">
+                {{ message|safe }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        {% block content %}
+            <div class="spacing"></div>
+            <div class="container">
+                <div class="textmodule">
+                    <h2>Page</h2>
+                    <div class="textmodule-text">
+                        <p>This page intentionally left almost blank.</p>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+        <div class="page-padding"></div>
+    </div>
+</div>
+{% block js_foot %}{% endblock %}
+</body>
+</html>

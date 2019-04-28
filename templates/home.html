@@ -1,0 +1,519 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Home{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block js_head %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/Sortable.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-sortable.js') }}"></script>
+{#    <script src="{{ url_for('static', filename='js/codemirror.js') }}" type="text/javascript"></script>#}
+{#    <script src="{{ url_for('static', filename='js/codemirror_javascript.js') }}" type="text/javascript"></script>#}
+{#    <script src="{{ url_for('static', filename='js/jsonlint.js') }}" type="text/javascript"></script>#}
+{#    <script src="{{ url_for('static', filename='js/codemirror_lint.js') }}" type="text/javascript"></script>#}
+{#    <script src="{{ url_for('static', filename='js/codemirror_lint_json.js') }}" type="text/javascript"></script>#}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <h3>Edit message</h3>
+            <p class="small">
+                <button class="btn btn-info float-right" type="button" data-toggle="modal" data-target="#helpModal"><i class="fa fa-info"></i>&nbsp;&nbsp;&nbsp;Options</button>
+                Drag the lines up and down using the <i class="handle fa fa-arrows-alt"></i> to change the order, and drag the texts left and right to change their positions.
+                <br/>
+                Speed and transition options can be changed per line, and color and font can be changed per text.
+            </p>
+
+            <form method="post">
+                <div id="lines">
+                {% if message_lines %}
+                {% for line in message_lines %}
+                    {% set outer_loop = loop %}
+                    <div class="row line" id="line_{{ loop.index }}">
+                        <i class="handle fa fa-arrows-alt"></i>
+
+                        <div class="form-group">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="fadeMenu_{{ loop.index }}">
+                                        <i class="fa fa-exchange-alt"></i>
+                                    </label>
+                                </div>
+                                <select required class="form-control line_input" id="fadeMenu_{{ loop.index }}">
+                                    <option disabled>Scroll Speed</option>
+                                    {% for fade in fade_options %}
+                                        <option value="{{ fade['name'] }}" {% if line['fade'] == fade['name'] %}selected{% endif %}>{{ fade['long_name'] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="speedMenu_{{ loop.index }}">
+                                        <i class="fa fa-tachometer-alt"></i>
+                                    </label>
+                                </div>
+                                <select required class="form-control line_input" id="speedMenu_{{ loop.index }}">
+                                    <option disabled>Scroll Speed</option>
+                                    {% for speed in speed_options %}
+                                        <option value="{{ speed['name'] }}" {% if line['speed'] == speed['name'] %}selected{% endif %}>{{ speed['long_name'] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        Texts:
+                        <div class="texts" id="texts_{{ loop.index }}">{% for text in line['texts'] %}<span id="text_{{ outer_loop.index }}_{{ loop.index }}" class="btn btn-sm btn-outline-dark text" data-color="{{ text['color'] }}" data-font="{{ text['font'] }}" data-text="{{ text['text'] }}"><span>{{ text['text'] }}</span></span>{% endfor %}</div>
+                        <button title="Edit line" class="btn btn-sm btn-secondary edit_button" type="button" data-toggle="modal" data-target="#textModal_{{ loop.index }}"><i class="fa fa-edit"></i></button>
+                    </div>
+                {% endfor %}
+                {% endif %}
+                </div>
+                <button title="Add new line" class="btn btn-secondary add_line_button" type="button" id="addLine"><i class="fa fa-plus"></i> Add line</button>
+
+                <br/>
+                <br/>
+                <span id="notification_message"></span>
+                <br/>
+
+                <input type="button" class="btn btn-success save_button" value="Save message"/>
+                <input type="submit" class="btn btn-danger send_button" value="Send to LEDBar!"/>
+            </form>
+            <div class="page-padding"></div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Option documentation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>This page offers some explanation about the different options for the transitions, scroll speeds, colors and fonts.</p>
+                    <div class="accordion" id="optionsAccordion">
+                        <div class="card">
+                            <div class="card-header" id="fadeOptionsHeader">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#fadeOptions" aria-expanded="false" aria-controls="fadeOptions">
+                                        <i class="fa fa-exchange-alt"></i>&nbsp;&nbsp;&nbsp;Transitions
+                                    </button>
+                                </h2>
+                            </div>
+
+                            <div id="fadeOptions" class="collapse" aria-labelledby="fadeOptionsHeader" data-parent="#optionsAccordion">
+                                <div class="card-body">
+                                    <span>These are the possible transition options:</span>
+                                    <table class="table table-sm table-bordered">
+                                        <tbody>
+                                        {% for option in fade_options %}
+                                            <tr>
+                                                <th>{{ option['long_name'] }}</th>
+                                                <td>{{ option['description']|safe }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="speedOptionsHeader">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#speedOptions" aria-expanded="false" aria-controls="speedOptions">
+                                        <i class="fa fa-tachometer-alt"></i>&nbsp;&nbsp;&nbsp;Scroll speeds
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="speedOptions" class="collapse" aria-labelledby="speedOptionsHeader" data-parent="#optionsAccordion">
+                                <div class="card-body">
+                                    <span>These are the possible scroll speed options:</span>
+                                    <table class="table table-sm table-bordered">
+                                        <tbody>
+                                        {% for option in speed_options %}
+                                            <tr>
+                                                <th>{{ option['long_name'] }}</th>
+                                                <td>{{ option['description']|safe }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="colorOptionsHeader">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#colorOptions" aria-expanded="false" aria-controls="colorOptions">
+                                        <i class="fa fa-palette"></i>&nbsp;&nbsp;&nbsp;Colors
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="colorOptions" class="collapse" aria-labelledby="colorOptionsHeader" data-parent="#optionsAccordion">
+                                <div class="card-body">
+                                    <span>These are the possible color options:</span>
+                                    <table class="table table-sm table-bordered">
+                                        <tbody>
+                                        {% for option in color_options %}
+                                            <tr>
+                                                <th>{{ option['long_name'] }}</th>
+                                                <td>{{ option['description']|safe }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="fontOptionsHeader">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#fontOptions" aria-expanded="false" aria-controls="fontOptions">
+                                        <i class="fa fa-font"></i>&nbsp;&nbsp;&nbsp;Fonts
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="fontOptions" class="collapse" aria-labelledby="fontOptionsHeader" data-parent="#optionsAccordion">
+                                <div class="card-body">
+                                    <span>These are the possible font options:</span>
+                                    <table class="table table-sm table-bordered">
+                                        <tbody>
+                                        {% for option in font_options %}
+                                            <tr>
+                                                <th>{{ option['long_name'] }}</th>
+                                                <td><img alt="Font {{ option['name'] }} Preview" class="json_font_picture" src="{{ url_for('static', filename='img/font_'+option['name']+'.png') }}" /></td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="textModals">
+        {% if message_lines %}
+        {% for line in message_lines %}
+            {% set outer_loop = loop %}
+            <div class="modal fade" id="textModal_{{ loop.index }}" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Edit texts</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="texts-container">
+                                {% for text in line['texts'] %}
+                                    <div class="text-container" id="textContainer_{{ outer_loop.index }}_{{ loop.index }}">
+                                        <div class="form-row">
+                                            <div class="form-group col">
+                                                <div class="input-group input-group-sm">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text" for="colorMenu_{{ outer_loop.index }}_{{ loop.index }}">
+                                                            <i class="fa fa-palette"></i>
+                                                        </label>
+                                                    </div>
+                                                    <select class="form-control colorMenu" id="colorMenu_{{ outer_loop.index }}_{{ loop.index }}">
+                                                        <option disabled {% if not text['color'] %}selected{% endif %}>Color</option>
+                                                        {% for color in color_options %}
+                                                            <option class="color {{ color['name'] }}" value="{{ color['name'] }}" {% if text['color'] == color['name'] %}selected{% endif %}>{{ color['long_name'] }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group col">
+                                                <div class="input-group input-group-sm">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text" for="fontMenu_{{ outer_loop.index }}_{{ loop.index }}">
+                                                            <i class="fa fa-font"></i>
+                                                        </label>
+                                                    </div>
+                                                    <select class="form-control fontMenu" id="fontMenu_{{ outer_loop.index }}_{{ loop.index }}">
+                                                        <option disabled {% if not text['font'] %}selected{% endif %}>Font</option>
+                                                        {% for font in font_options %}
+                                                            <option value="{{ font['name'] }}" {% if text['font'] == font['name'] %}selected{% endif %}>{{ font['long_name'] }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col">
+                                                <div class="input-group input-group-sm">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text" for="textInput_{{ outer_loop.index }}_{{ loop.index }}">
+                                                            <i class="fa fa-comment-alt"></i>
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control textInput" type="text" name="textInput_{{ outer_loop.index }}_{{ loop.index }}" id="textInput_{{ outer_loop.index }}_{{ loop.index }}" value="{{ text['text'] }}" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <button type="button" id="addText_{{ loop.index }}" class="btn btn-outline-success add_text_button"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add text</button>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="saveModal_{{ loop.index }}" type="button" class="btn btn-secondary modal_button" data-dismiss="modal">Save</button>
+                 line_block_template       </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    <div id="line_block_template"><div class="row line" id="line_">
+        <i class="handle fa fa-arrows-alt"></i>
+        <div class="form-group">
+            <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="fadeMenu_">
+                        <i class="fa fa-exchange-alt"></i>
+                    </label>
+                </div>
+                <select disabled class="form-control line_input" id="fadeMenu_">
+                    <option disabled>Scroll Speed</option>
+                    {% for fade in fade_options %}
+                        <option value="{{ fade['name'] }}" selected>{{ fade['long_name'] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="speedMenu_">
+                        <i class="fa fa-tachometer-alt"></i>
+                    </label>
+                </div>
+                <select disabled class="form-control line_input" id="speedMenu_">
+                    <option disabled>Scroll Speed</option>
+                    {% for speed in speed_options %}
+                        <option value="{{ speed['name'] }}">{{ speed['long_name'] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        Texts:
+        <div class="texts" id="texts_"><span id="text_" class="btn btn-sm btn-outline-dark text"><span></span></span></div>
+
+
+        <button title="Edit line" class="btn btn-sm btn-secondary edit_button" type="button" disabled><i class="fa fa-edit"></i></button>
+    </div></div>
+    <div id="text_block_template"><span id="text_" class="btn btn-sm btn-outline-dark text"><span></span></span></div>
+    <div id="modal_text_input_template"><div class="text-container" id="textContainer_">
+        <div class="form-row">
+            <div class="form-group col">
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <label id="colorLabel" class="input-group-text" for="colorMenu_">
+                            <i class="fa fa-palette"></i>
+                        </label>
+                    </div>
+                    <select required class="form-control colorMenu" id="colorMenu_">
+                        <option disabled>Color</option>
+                        {% for color in color_options %}
+                            <option class="color {{ color['name'] }}" value="{{ color['name'] }}">{{ color['long_name'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group col">
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <label id="fontLabel" class="input-group-text" for="fontMenu_">
+                            <i class="fa fa-font"></i>
+                        </label>
+                    </div>
+                    <select required class="form-control fontMenu" id="fontMenu_">
+                        <option disabled>Font</option>
+                        {% for font in font_options %}
+                            <option value="{{ font['name'] }}">{{ font['long_name'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col">
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <label id="textLabel" class="input-group-text" for="textInput_">
+                            <i class="fa fa-comment-alt"></i>
+                        </label>
+                    </div>
+                    <input class="form-control textInput" type="text" name="textInput_" id="textInput_" value="" />
+                </div>
+            </div>
+        </div>
+    </div></div>
+    <form method="post" id="json_form"><input type="text" id="json_data" name="json_data" /></form>
+{% endblock %}
+
+{% block js_foot %}
+    <script type="text/javascript">
+        let lines = $('#lines');
+        lines.sortable({
+            group: 'lines',
+            handle: '.handle',
+            animation: 150,
+        });
+        {% if message_lines %}
+        {% for line in message_lines %}
+            $('#texts_{{ loop.index }}').sortable({
+                group: 'texts{{ loop.index }}',
+                handle: ".text span",
+                draggable: ".text",
+                animation: 150,
+                onUpdate: setOrderChanged,
+            });
+        {% endfor %}
+        {% endif %}
+
+        let edit_buttons = $(".edit_button");
+        let line_inputs = $(".line_input");
+        let save_button = $(".save_button");
+        let send_button = $(".send_button");
+        let add_text_button = $(".add_text_button");
+        let add_line_button = $(".add_line_button");
+        let message = $("#notification_message");
+        let modal_buttons = $(".modal_button");
+        let modal_input_template = $("#modal_text_input_template")[0];
+        let text_block_template = $("#text_block_template")[0];
+        let line_block_template = $("#line_block_template")[0];
+
+        function setOrderChanged(event){
+            edit_buttons.attr('disabled', true);
+            line_inputs.attr('disabled', true);
+            send_button.attr('disabled', true);
+            edit_buttons.attr('title', "Please save the message before further editing it.");
+            line_inputs.attr('title', "Please save the message before further editing it.");
+            edit_buttons.tooltip({placement: "top"});
+            line_inputs.tooltip({placement: "top"});
+            message.html("Please save the message once you are done modifying the order of the texts.");
+        }
+
+        function setMessageChanged(){
+            lines.sortable({
+                group: 'lines',
+                handle: '.handle',
+                animation: 150,
+                onUpdate: setOrderChanged,
+            });
+            {% if message_lines %}
+            {% for line in message_lines %}
+                $('#texts{{ loop.index }}').sortable({
+                    group: 'texts{{ loop.index }}',
+                    animation: 150,
+                    onUpdate: setOrderChanged,
+                });
+            {% endfor %}
+            {% endif %}
+        }
+
+        // On modal close, destroy the sortable on the texts, update the text buttons, and re-create the sortable
+        modal_buttons.click(function(event){
+            let identifier = this.id.replace("saveModal_" , "");
+            let text_containers = $("#textModal_"+identifier+" .text-container");
+            text_containers.each(function(){
+                let color = $(this).find(".colorMenu")[0];
+                let font = $(this).find(".fontMenu")[0];
+                let text = $(this).find(".textInput")[0];
+                let text_identifier = color.id.replace("colorMenu_", "");
+                let text_span = $("#text_" + text_identifier)[0];
+
+                text_span.dataset.color = color.value;
+                text_span.dataset.font = font.value;
+                text_span.dataset.text = text.value;
+                text_span.innerHTML = "<span>"+text.value+"</span>";
+            });
+        });
+
+        // On add text, add a text row to the modal and to the list of texts in the page.
+        add_text_button.click(function(event){
+            let identifier = this.id.replace("addText_", "");
+            let modal_body = $("#textModal_"+identifier+" .modal-body .texts-container");
+            let texts_body = $("#texts_"+identifier);
+
+            let replace_text = "textContainer_"+identifier+"_";
+            let text_index = parseInt(this.previousElementSibling.lastElementChild.id.replace(new RegExp(replace_text, 'g'), "")) + 1;
+
+            // Place the new form input fields
+            let temp_modal_input_template = modal_input_template.innerHTML;
+            temp_modal_input_template = temp_modal_input_template.replace(/textContainer_/g, "textContainer_"+identifier+"_"+text_index);
+            temp_modal_input_template = temp_modal_input_template.replace(/colorMenu_/g, "colorMenu_"+identifier+"_"+text_index);
+            temp_modal_input_template = temp_modal_input_template.replace(/fontMenu_/g, "fontMenu_"+identifier+"_"+text_index);
+            temp_modal_input_template = temp_modal_input_template.replace(/textInput_/g, "textInput_"+identifier+"_"+text_index);
+            let new_modal_html = jQuery.parseHTML(temp_modal_input_template)[0];
+            modal_body.append(new_modal_html);
+
+            // Place the new text button
+            let temp_text_template = text_block_template.innerHTML;
+            temp_text_template = temp_text_template.replace(/text_/g, "text_"+identifier+"_"+text_index);
+            let new_text_html = jQuery.parseHTML(temp_text_template)[0];
+            texts_body.append(new_text_html);
+        });
+
+        // On add line, add a line row to the page and require a save (or add more lines).
+        add_line_button.click(function(event){
+            let page_body = $("#lines");
+            let new_index = parseInt(page_body[0].lastElementChild.id.replace(/line_/g, "")) + 1;
+            let temp_line_template = line_block_template.innerHTML;
+            temp_line_template = temp_line_template.replace(/line_/g, "line_"+new_index);
+            temp_line_template = temp_line_template.replace(/fadeMenu_/g, "fadeMenu_"+new_index);
+            temp_line_template = temp_line_template.replace(/speedMenu_/g, "speedMenu_"+new_index);
+            temp_line_template = temp_line_template.replace(/texts_/g, "texts_"+new_index);
+            temp_line_template = temp_line_template.replace(/text_/g, "text_"+new_index+"_1");
+            let new_html = jQuery.parseHTML(temp_line_template)[0];
+            page_body.append(new_html);
+            setOrderChanged();
+        });
+
+        // On save, convert the html tree into the proper json format, and post it to the save endpoint.
+        save_button.click(function(event){
+            let data = [];
+            $("#lines .line").each(function(){
+                let line_data = {};
+                let line = $("#"+this.id);
+                let index = parseInt(this.id.replace(/line_/g, ""));
+                line_data.fade = $("#fadeMenu_"+index)[0].value;
+                line_data.speed = $("#speedMenu_"+index)[0].value;
+                line_data.texts = [];
+                line.find(".texts .text").each(function(){
+                    let text_data = {};
+                    text_data.color = this.dataset.color;
+                    text_data.font = this.dataset.font;
+                    text_data.text = this.dataset.text ? this.dataset.text : "";
+                    line_data.texts.push(text_data);
+                });
+
+                data.push(line_data);
+            });
+            let json_data = JSON.stringify(data);
+            $("#json_data").val(json_data);
+            $("#json_form").submit();
+        });
+    </script>
+{% endblock %}
