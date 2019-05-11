@@ -35,7 +35,11 @@ def update_saved(json_data):
 
 
 def send_saved():
-    json_data = get_saved_message()
+    try:
+        json_data = json.loads(get_saved_message().message)
+    except (JSONDecodeError, AttributeError):
+        json_data = {}
+
     try:
         if app.config.get("LEDBAR_DEVICE", None) is not None:
             bar = LEDBar(app.config.get("LEDBAR_DEVICE", None))
