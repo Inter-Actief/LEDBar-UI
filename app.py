@@ -1,3 +1,5 @@
+from json import JSONDecodeError
+
 from flask import Flask, render_template, request, flash, json
 from flask_sqlalchemy import SQLAlchemy
 from moving_message_g009dh.ledbar import LEDBar
@@ -18,7 +20,18 @@ def shutdown_session(exception=None):
 
 
 def get_saved_message():
-    return Message.query.get(1)
+    return Message.query.first()
+
+
+def update_saved(json_data):
+    json_str = json.dumps(json_data)
+    msg = get_saved_message()
+    if msg:
+        msg.message = json_str
+    else:
+        msg = Message(message=json_str)
+    db_session.add(msg)
+    db_session.commit()
 
 
 def send_saved():
@@ -42,6 +55,7 @@ def home():
     if request.method == 'POST':
         json_data = request.form['json_data']
         form_data = request.form
+        print(request.form)
         if not json_data:
             flash("No data is given", 'error')
         else:
@@ -52,44 +66,16 @@ def home():
                     flash("JSON data is invalid. Reason(s):\n<ul>{}</ul>".format(
                         "".join("<li>{}</li>".format(x) for x in reasons)))
                 else:
-                    result, msg = send_saved()
-                    if not result:
-                        flash(msg)
+                    update_saved(json_data)
 
             except ValueError as e:
                 flash("JSON data is invalid. {}".format(e))
 
     context['form_data'] = form_data
-    context['message_lines'] = get_saved_message()
-    # context['message_lines'] = [{
-    #     "fade": "pacman",
-    #     "speed": "speed_8",
-    #     "texts": [{
-    #         "color": "bright_red",
-    #         "font": "extra_wide",
-    #         "text": "X"
-    #     }, {
-    #         "color": "bright_orange",
-    #         "font": "extra_wide",
-    #         "text": "T"
-    #     }, {
-    #         "color": "bright_yellow",
-    #         "font": "extra_wide",
-    #         "text": "R"
-    #     }, {
-    #         "color": "bright_green",
-    #         "font": "extra_wide",
-    #         "text": "A"
-    #     }]
-    # }, {
-    #     "fade": "open_from_center",
-    #     "texts": [{
-    #         "color": "bright_layer_mix_rainbow",
-    #         "font": "small",
-    #         "text": "smol"
-    #     }]
-    # }]
-
+    try:
+        context['message_lines'] = json.loads(get_saved_message().message)['files'][0]['lines']
+    except (JSONDecodeError, KeyError):
+        context['message_lines'] = None
     context['fade_options'] = FADE_OPTIONS
     context['speed_options'] = SPEED_OPTIONS
     context['color_options'] = COLOR_OPTIONS

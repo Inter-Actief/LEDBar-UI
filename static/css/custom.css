@@ -291,3 +291,7 @@ img.json_font_picture {
 #text_block_template, #modal_text_input_template, #line_block_template, #json_form {
     display: none;
 }
+
+.delete_button {
+    float: right;
+}
