@@ -77,7 +77,7 @@
                 <br/>
 
                 <input type="button" class="btn btn-success save_button" value="Save message"/>
-                <input type="submit" class="btn btn-danger send_button" value="Send to LEDBar!"/>
+                <input type="button" class="btn btn-danger send_button" value="Send to LEDBar!"/>
             </form>
             <div class="page-padding"></div>
         </div>
@@ -367,7 +367,7 @@
             </div>
         </div>
     </div></div>
-    <form method="post" id="json_form"><input type="text" id="json_data" name="json_data" /></form>
+    <form method="post" id="json_form"><input type="text" id="json_data" name="json_data" /><input type="checkbox" id="send_to_ledbar" name="send_to_ledbar"></form>
 {% endblock %}
 
 {% block js_foot %}
@@ -526,6 +526,33 @@
             });
             let json_data = JSON.stringify(data);
             $("#json_data").val(json_data);
+            $("#json_form").submit();
+        });
+
+        // On save, convert the html tree into the proper json format, and post it to the save endpoint,
+        // along with a value send=true to indicate we want to send it.
+        send_button.click(function(event){
+            let data = [];
+            $("#lines .line").each(function(){
+                let line_data = {};
+                let line = $("#"+this.id);
+                let index = parseInt(this.id.replace(/line_/g, ""));
+                line_data.fade = $("#fadeMenu_"+index)[0].value;
+                line_data.speed = $("#speedMenu_"+index)[0].value;
+                line_data.texts = [];
+                line.find(".texts .text").each(function(){
+                    let text_data = {};
+                    text_data.color = this.dataset.color;
+                    text_data.font = this.dataset.font;
+                    text_data.text = this.dataset.text ? this.dataset.text : "";
+                    line_data.texts.push(text_data);
+                });
+
+                data.push(line_data);
+            });
+            let json_data = JSON.stringify(data);
+            $("#json_data").val(json_data);
+            $("#send_to_ledbar").prop('checked', true);
             $("#json_form").submit();
         });
 

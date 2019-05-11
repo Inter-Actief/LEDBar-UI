@@ -51,10 +51,9 @@ def send_saved():
 @app.route('/', methods=('GET', 'POST'))
 def home():
     context = {}
-    form_data = {}
     if request.method == 'POST':
         json_data = request.form['json_data']
-        form_data = request.form
+        send_to_ledbar = request.form['send_to_ledbar'] if 'send_to_ledbar' in request.form else False
         if not json_data:
             flash("No data is given", 'error')
         else:
@@ -67,10 +66,14 @@ def home():
                 else:
                     update_saved(json_data)
 
+                    if send_to_ledbar:
+                        success, reason = send_saved()
+                        if not success:
+                            flash(reason)
+
             except ValueError as e:
                 flash("JSON data is invalid. {}".format(e))
 
-    context['form_data'] = form_data
     try:
         context['message_lines'] = json.loads(get_saved_message().message)['files'][0]['lines']
     except (JSONDecodeError, KeyError, AttributeError):
