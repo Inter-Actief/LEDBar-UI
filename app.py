@@ -55,7 +55,6 @@ def home():
     if request.method == 'POST':
         json_data = request.form['json_data']
         form_data = request.form
-        print(request.form)
         if not json_data:
             flash("No data is given", 'error')
         else:
@@ -74,7 +73,7 @@ def home():
     context['form_data'] = form_data
     try:
         context['message_lines'] = json.loads(get_saved_message().message)['files'][0]['lines']
-    except (JSONDecodeError, KeyError):
+    except (JSONDecodeError, KeyError, AttributeError):
         context['message_lines'] = None
     context['fade_options'] = FADE_OPTIONS
     context['speed_options'] = SPEED_OPTIONS
