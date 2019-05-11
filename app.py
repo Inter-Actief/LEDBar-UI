@@ -120,39 +120,43 @@ def custom_data():
                 flash("JSON data is invalid. {}".format(e))
 
     context['form_data'] = form_data
-    context['default_message'] = json.dumps({
-        "files": [{
-            "number": 1,
-            "lines": [{
-                "fade": "pacman",
-                "speed": "speed_8",
-                "texts": [{
-                    "color": "bright_red",
-                    "font": "extra_wide",
-                    "text": "X"
+
+    try:
+        context['default_message'] = json.dumps(json.loads(get_saved_message().message), indent=2)
+    except (JSONDecodeError, AttributeError):
+        context['default_message'] = json.dumps({
+            "files": [{
+                "number": 1,
+                "lines": [{
+                    "fade": "pacman",
+                    "speed": "speed_8",
+                    "texts": [{
+                        "color": "bright_red",
+                        "font": "extra_wide",
+                        "text": "X"
+                    }, {
+                        "color": "bright_orange",
+                        "font": "extra_wide",
+                        "text": "T"
+                    }, {
+                        "color": "bright_yellow",
+                        "font": "extra_wide",
+                        "text": "R"
+                    }, {
+                        "color": "bright_green",
+                        "font": "extra_wide",
+                        "text": "A"
+                    }]
                 }, {
-                    "color": "bright_orange",
-                    "font": "extra_wide",
-                    "text": "T"
-                }, {
-                    "color": "bright_yellow",
-                    "font": "extra_wide",
-                    "text": "R"
-                }, {
-                    "color": "bright_green",
-                    "font": "extra_wide",
-                    "text": "A"
-                }]
-            }, {
-                "fade": "open_from_center",
-                "texts": [{
-                    "color": "bright_layer_mix_rainbow",
-                    "font": "small",
-                    "text": "smol"
+                    "fade": "open_from_center",
+                    "texts": [{
+                        "color": "bright_layer_mix_rainbow",
+                        "font": "small",
+                        "text": "small"
+                    }]
                 }]
             }]
-        }]
-    }, indent=2)
+        }, indent=2)
 
     context['fade_options'] = FADE_OPTIONS
     context['speed_options'] = SPEED_OPTIONS
