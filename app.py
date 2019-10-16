@@ -167,11 +167,18 @@ def custom_data():
 
 
 if __name__ == '__main__':
-    app.run(
-        host=app.config.get("HOST"),
-        port=app.config.get("PORT"),
-        ssl_context=(
-            app.config.get("SSL_CERTIFICATE_PATH"),
-            app.config.get("SSL_KEY_PATH")
+    if app.config.get("USE_SSL", None):
+        app.run(
+            host=app.config.get("HOST"),
+            port=app.config.get("PORT"),
+            ssl_context=(
+                app.config.get("SSL_CERTIFICATE_PATH"),
+                app.config.get("SSL_KEY_PATH")
+            )
         )
-    )
+    else:
+        app.run(
+            host=app.config.get("HOST"),
+            port=app.config.get("PORT")
+        )
+
