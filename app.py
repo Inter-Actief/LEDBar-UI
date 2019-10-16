@@ -167,7 +167,6 @@ def custom_data():
 
 
 if __name__ == '__main__':
-    db.create_all()
     if app.config.get("USE_SSL", None):
         app.run(
             host=app.config.get("HOST"),
