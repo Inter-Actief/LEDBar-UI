@@ -1,0 +1,13 @@
+[Unit]
+Description=LEDBar User Interface
+After=syslog.target network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/LEDBar-UI
+ExecStart=/opt/LEDBar-UI/start.sh
+User=ledbar
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
