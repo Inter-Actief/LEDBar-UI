@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-python3 ./app.py
+./venv/bin/python ./app.py
