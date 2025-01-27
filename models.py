@@ -1,15 +1,15 @@
-from sqlalchemy import Column, Integer, Text
+from sqlalchemy import func
+from sqlalchemy.orm import Mapped, mapped_column
 
-from database import Base
+from database import db
 
 
-class Message(Base):
-    __tablename__ = 'messages'
-    id = Column(Integer, primary_key=True)
-    message = Column(Text(), unique=True)
+class Message(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    message: Mapped[str]
 
     def __init__(self, message=None):
         self.message = message
 
     def __repr__(self):
-        return '<Message %r>' % self.message
+        return f"<Message {self.message}>"

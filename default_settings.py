@@ -4,3 +4,6 @@ USE_SSL = False
 SSL_CERTIFICATE_PATH = "./cert.pem"
 SSL_KEY_PATH = "./key.pem"
 SQLALCHEMY_DATABASE_URI = "sqlite:///db.sqlite3"
+LEDBAR_DEVICE = "/dev/ttyUSB0"
+SECRET_KEY = "changeme"
+SESSION_TYPE = "filesystem"

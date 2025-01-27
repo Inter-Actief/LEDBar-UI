@@ -4,19 +4,16 @@ from flask import Flask, render_template, request, flash, json
 from flask_sqlalchemy import SQLAlchemy
 from moving_message_g009dh.ledbar import LEDBar
 
-from database import db_session
+from database import db
+
 from ledbar_constants import *
 from models import Message
 
 app = Flask(__name__)
-app.config.from_pyfile("default_settings.cfg")
-app.config.from_pyfile("local_settings.cfg", silent=True)
-db = SQLAlchemy(app)
+app.config.from_pyfile("default_settings.py")
+app.config.from_pyfile("local_settings.py", silent=True)
 
-
-@app.teardown_appcontext
-def shutdown_session(exception=None):
-    db_session.remove()
+db.init_app(app)
 
 
 def get_saved_message():
@@ -30,8 +27,8 @@ def update_saved(json_data):
         msg.message = json_str
     else:
         msg = Message(message=json_str)
-    db_session.add(msg)
-    db_session.commit()
+    db.session.add(msg)
+    db.session.commit()
 
 
 def send_saved():
@@ -167,6 +164,9 @@ def custom_data():
 
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+
     if app.config.get("USE_SSL", None):
         app.run(
             host=app.config.get("HOST"),
@@ -181,4 +181,3 @@ if __name__ == '__main__':
             host=app.config.get("HOST"),
             port=app.config.get("PORT")
         )
-
